@@ -1,6 +1,6 @@
-# longread_umi 
+# longread_umi-AF-LSU
 
-A collection of scripts for processing longread UMI data.
+This is a modified fork/version of longread UMI pipeline for LSU long read consensus use cases of Anaerobice fungi.
 
 **Table of contents**
 - [Installation](#installation)
