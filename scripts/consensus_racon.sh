@@ -120,10 +120,42 @@ seed_racon () {
   done
   
   # Rename and add binsize
-  sed -i "s/^>.*/>$UMINO;ubs=$BINSIZE/" $OUT/${UMINO}_sr.fa                    
+  sed -i "s/^>.*/>$UMINO;ubs=$BINSIZE/" $OUT/${UMINO}_sr.fa                   
+
 } 
 
 export -f seed_racon
+
+
+# peak detection and fastq split
+
+for FQ in $IN/0/umi*bins.fastq; do
+  prefix=${FQ%*.fastq}
+  umi=${FQ##*/}
+  umi=${umi%.*}
+  umi=${umi%*bins}
+  umi=${umi#umi*}
+  perl $LONGREAD_UMI_PATH/scripts/readLengthDistribution.pl $FQ $prefix.length
+  
+  Rscript $LONGREAD_UMI_PATH/scripts/density_peak_detection_pipe.r  $prefix.length |perl $LONGREAD_UMI_PATH/scripts/process_Routput_extractFastq.pl - $FQ $IN/0/$umi
+
+  for peak in $IN/0/$umi*.fq;do
+          peakN=$(basename $peak)
+          peakN=${peakN%*.fq}
+	  peakN=${peakN##*_}
+
+    $USEARCH -cluster_fast $peak -id 0.75 -strand both\
+      -sizeout -centroids $IN/0/${umi}_centroids.fa -clusters $IN/0/peak$peakN\_cluster
+    for readsCluster in $IN/0/peak$peakN\_cluster*; do
+	    centroid=$(basename $readsCluster)
+	    centroid=${centroid#cluster*}
+          perl $LONGREAD_UMI_PATH/scripts/fasta2fastq.pl $readsCluster $IN/0/umi$umi\_$peakN\_$centroid\bins.fastq
+    done
+
+  done
+
+  mv $FQ $FQ.old
+done
 
 # Perform assembly in parallel
 find $IN -name 'umi*bins.fastq'  |\
