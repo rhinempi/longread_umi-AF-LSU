@@ -12,42 +12,9 @@ This is a modified fork/version of longread UMI pipeline for LSU long read conse
 **Citation**  
 SM Karst, RM Ziels, RH Kirkegaard, EA Sørensen, D. McDonald, Q Zhu, R Knight, & M Albertsen. (2020). Enabling high-accuracy long-read amplicon sequences using unique molecular identifiers with Nanopore or PacBio sequencing. [bioRxiv, 6459039](https://www.biorxiv.org/content/10.1101/645903v3).
 
+Diana, Katrin, etc. (2024). Structure and phylogenetic resolution of all ribosomal regions of Neocallimastigales. [Nature](https://www.nature.com/).
+
 ## Installation
-
-### Conda
-
-1. Requirements/Dependencies  
-   OS tested (Linux 3.10.0, Ubuntu 14.04, Ubuntu 16.04)  
-    `usearch` >=10
-   
-2. Download installer script from terminal  
-   ```
-   wget https://raw.githubusercontent.com/SorenKarst/longread_umi/master/scripts/install_conda.sh
-   ```
-   
-3. Run installation script from terminal and follow instructions (< 10 min on desktop)  
-   `bash ./install_conda.sh` 
-   
-4. If miniconda was installed along with the pipeline, initiate conda and refresh terminal before using pipeline.  
-   `conda init; source ~/.bashrc`  
-   
-5. Activate and deactivate conda environment
-   
-   ```
-   conda activate longread_umi
-   ...
-   conda deactivate
-   ```
-   
-6. The longread_umi installation directory can be found by typing. 
-
-   ```
-   conda activate longread_umi
-   echo "$CONDA_PREFIX/longread_umi"
-   conda deactivate
-   ```
-
-   This can be useful if you want to edit the usearch path in `longread_umi/scripts/dependencies.sh` or use the pipeline test data in `longread_umi/test_data/test_reads.fq`.
 
 ### Manual
 
@@ -55,7 +22,8 @@ SM Karst, RM Ziels, RH Kirkegaard, EA Sørensen, D. McDonald, Q Zhu, R Knight, &
    OS tested (Linux 3.10.0, Ubuntu 14.04, Ubuntu 16.04)  
    See `scripts/longread_umi_version_dump.txt`
 2. Clone from github in terminal  
-   `git clone https://github.com/SorenKarst/longread_umi.git`
+   `git clone https://github.com/rhinempi/longread_umi-AF-LSU.git`
+   `gh repo clone rhinempi/longread_umi-AF-LSU`
 3. Make bash scripts executable  
    `find ./longread_umi -name "*.sh" -exec chmod +x {} \;`
 4. Install dependencies  

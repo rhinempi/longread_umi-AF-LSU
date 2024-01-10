@@ -64,8 +64,8 @@ cd ..
 rm -rf ./cmake-utils
 
 ### Install longread-UMI-pipeline
-git clone https://github.com/SorenKarst/longread-UMI-pipeline -b $BRANCH
-cd ./longread-UMI-pipeline
+git clone https://github.com/rhinempi/longread_umi-AF-LSU.git -b $BRANCH
+cd ./longread-UMI-AF-LSU
 find . -name "*.sh" -exec chmod +x {} \;
 cd ..
 ln -s $SOFTWARE_DIR/longread-UMI-pipeline/longread_umi.sh ~/bin/longread_umi
