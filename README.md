@@ -22,21 +22,21 @@ Diana, Katrin, etc. (2024). Structure and phylogenetic resolution of all ribosom
    OS tested (Linux 3.10.0, Ubuntu 14.04, Ubuntu 16.04)  
    See `scripts/longread_umi_version_dump.txt`
 2. Clone from github in terminal  
-   """
+   ```
    git clone https://github.com/rhinempi/longread_umi-AF-LSU.git
-   """
+   ```
    or
-   """
+   ```
    gh repo clone rhinempi/longread_umi-AF-LSU
-   """
+   ```
 4. Make bash scripts executable  
-   """
+   ```
    find ./longread_umi-AF-LSU -name "*.sh" -exec chmod +x {} \;
-   """
+   ```
 6. Install dependencies  
-   """
+   ```
    ./longread_umi-AF-LSU/scripts/install_dependencies.sh
-   """
+   ```
 8. Change paths to dependencies  
    Modify `./longread_umi-AF-LSU/scripts/dependencies.sh` in a texteditor.
 9. Customize porechop adaptors.py to be able to detect custom primers  
