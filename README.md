@@ -1,6 +1,6 @@
 # longread_umi-AF-LSU
 
-This is a modified fork/version of longread UMI pipeline for LSU long read consensus use cases of Anaerobice fungi.
+This is a bioinformatics pipeline for LSU long read consensus use cases of Anaerobice fungi.
 
 **Table of contents**
 - [Installation](#installation)
@@ -10,16 +10,15 @@ This is a modified fork/version of longread UMI pipeline for LSU long read conse
 - [Usage](#usage)
 
 **Citation**  
-SM Karst, RM Ziels, RH Kirkegaard, EA Sørensen, D. McDonald, Q Zhu, R Knight, & M Albertsen. (2020). Enabling high-accuracy long-read amplicon sequences using unique molecular identifiers with Nanopore or PacBio sequencing. [bioRxiv, 6459039](https://www.biorxiv.org/content/10.1101/645903v3).
 
-Diana, Katrin, etc. (2024). Structure and phylogenetic resolution of all ribosomal regions of Neocallimastigales. [Nature](https://www.nature.com/).
+Diana, Katrin, etc. (2025). Structure and phylogenetic resolution of all ribosomal regions of Neocallimastigales.
 
 ## Installation
 
 ### Manual
 
 1. Requirements/Dependencies  
-   OS tested (Linux 3.10.0, Ubuntu 14.04, Ubuntu 16.04)  
+   OS tested (Linux 3.10.0, Ubuntu 14.04, Ubuntu 16.04)
    See `scripts/longread_umi_version_dump.txt`
 2. Clone from github in terminal  
    ```
@@ -37,10 +36,12 @@ Diana, Katrin, etc. (2024). Structure and phylogenetic resolution of all ribosom
    ```
    ./longread_umi-AF-LSU/scripts/install_dependencies.sh
    ```
+   If you do not have conda installed, please install conda first:
+   ```
+   ./longread_umi-AF-LSU/scripts/install_conda.sh
+   ```
 8. Change paths to dependencies  
    Modify `./longread_umi-AF-LSU/scripts/dependencies.sh` in a texteditor.
-9. Customize porechop adaptors.py to be able to detect custom primers  
-   Replace current `adapters.py` with `./longread_umi-AF-LSU/scripts/adapters.py`
 
 ## Quick start
 
