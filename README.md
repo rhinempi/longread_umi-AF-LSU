@@ -32,16 +32,21 @@ Diana, Katrin, etc. (2025). Structure and phylogenetic resolution of all ribosom
    ```
    find ./longread_umi-AF-LSU -name "*.sh" -exec chmod +x {} \;
    ```
-6. Install dependencies  
+6. Install dependencies 
+   If you do not have conda installed, please install conda first:
+   ```
+   source ./longread_umi-AF-LSU/scripts/install_conda.sh
+   ```
+   To install the pipeline, run the following command
    ```
    ./longread_umi-AF-LSU/scripts/install_dependencies.sh
    ```
-   If you do not have conda installed, please install conda first:
+   Or
    ```
-   ./longread_umi-AF-LSU/scripts/install_conda.sh
+   ./longread_umi-AF-LSU/scripts/install_dependencies_conda.sh
    ```
 8. Change paths to dependencies  
-   Modify `./longread_umi-AF-LSU/scripts/dependencies.sh` in a texteditor.
+   Modify `./longread_umi-AF-LSU/scripts/dependencies.sh` in a texteditor, if you wish to install dependencies elsewhere.
 
 ## Quick start
 
