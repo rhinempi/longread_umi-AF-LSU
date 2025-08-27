@@ -32,7 +32,7 @@ Diana, Katrin, etc. (2025). Structure and phylogenetic resolution of all ribosom
    ```
    find ./longread_umi-AF-LSU -name "*.sh" -exec chmod +x {} \;
    ```
-6. Install dependencies 
+6. Install dependencies  
    If you do not have conda installed, please install conda first:
    ```
    source ./longread_umi-AF-LSU/scripts/install_conda.sh

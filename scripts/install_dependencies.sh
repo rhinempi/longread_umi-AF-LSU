@@ -1,7 +1,7 @@
 #!/bin/bash
 # DESCRIPTION
 #    Instructions for installing dependencies for  
-#    longread-UMI-pipeline.
+#    longread_umi-AF-LSU.
 #
 #    USE AT OWN RISK!!!
 #    Will likely require system specific modifications to work.
@@ -42,7 +42,7 @@ fi
 
 ### Create file with paths
 
-echo '' > ./longread-UMI-pipeline_paths.txt
+echo '' > ./longread_umi-AF-LSU_paths.txt
 
 # Make ~/bin if it doesn't exist
 mkdir -p ~/bin
@@ -56,6 +56,8 @@ rm ./get-pip.py
 # python3 -m pip install virtualenv --user
 
 # Cmake
+echo "--------------- cmake"
+echo $PWD
 git clone https://github.com/scivision/cmake-utils.git -b v1.4.0.0;
 cd cmake-utils
 python3 cmake_setup.py 3.15.2 \
@@ -63,27 +65,35 @@ python3 cmake_setup.py 3.15.2 \
 cd ..
 rm -rf ./cmake-utils
 
-### Install longread-UMI-pipeline
+### Install longread_umi-AF-LSU
+echo "--------------- repoDownload"
+echo $PWD
 git clone https://github.com/rhinempi/longread_umi-AF-LSU.git -b $BRANCH
-cd ./longread-UMI-AF-LSU
+cd ./longread_umi-AF-LSU
 find . -name "*.sh" -exec chmod +x {} \;
 cd ..
-ln -s $SOFTWARE_DIR/longread-UMI-pipeline/longread_umi.sh ~/bin/longread_umi
+ln -s $SOFTWARE_DIR/longread_umi-AF-LSU/longread_umi.sh ~/bin/longread_umi
 
 ### Install dependencies automaticly
 
 # Seqtk
+echo "--------------- seqtk"
+echo $PWD
 git clone https://github.com/lh3/seqtk.git;
 cd seqtk; make
 cd ..
-echo "export SEQTK=$SOFTWARE_DIR/seqtk/seqtk" >> ./longread-UMI-pipeline_paths.txt
+echo "export SEQTK=$SOFTWARE_DIR/seqtk/seqtk" >> ./longread_umi-AF-LSU_paths.txt
 
 # GNU Parallel
+echo "--------------- parallel"
+echo $PWD
 (wget pi.dk/3 -qO - ||  curl pi.dk/3/) | bash
-echo "export GNUPARALLEL=$(which parallel)" >> ./longread-UMI-pipeline_paths.txt
+echo "export GNUPARALLEL=$(which parallel)" >> ./longread_umi-AF-LSU_paths.txt
 rm -rf ./parallel*
 
 # Racon
+echo "--------------- racon"
+echo $PWD
 git clone --recursive https://github.com/isovic/racon.git racon
 cd racon
 mkdir build
@@ -91,22 +101,26 @@ cd build
 $SOFTWARE_DIR/cmake/cmake*/bin/cmake -DCMAKE_BUILD_TYPE=Release ..
 make
 cd ../..
-echo "export RACON=$SOFTWARE_DIR/racon/build/bin/racon" >> ./longread-UMI-pipeline_paths.txt
+echo "export RACON=$SOFTWARE_DIR/racon/build/bin/racon" >> ./longread_umi-AF-LSU_paths.txt
 
 # Minimap2
+echo "--------------- minimap2"
+echo $PWD
 git clone https://github.com/lh3/minimap2
 cd minimap2 && make
 cd ..
 ln -s $SOFTWARE_DIR/minimap2/minimap2 ~/bin/minimap2
-echo "export MINIMAP2=$(which minimap2)" >> ./longread-UMI-pipeline_paths.txt
+echo "export MINIMAP2=$(which minimap2)" >> ./longread_umi-AF-LSU_paths.txt
 
 # Gawk
 # Check presence by:
 # which gawk
 # If not present install
-echo "export GAWK=$(which gawk)" >> ./longread-UMI-pipeline_paths.txt
+echo "export GAWK=$(which gawk)" >> ./longread_umi-AF-LSU_paths.txt
 
 #Samtools
+echo "--------------- samtools"
+echo $PWD
 wget "https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2"
 tar -xjf ./samtools-1.9.tar.bz2
 cd samtools-1.9
@@ -119,9 +133,11 @@ make install
 cd ..
 rm -rf ./samtools-1.9*
 ln -s $SOFTWARE_DIR/samtools_1.9/bin/samtools ~/bin/samtools
-echo "export SAMTOOLS=$(which samtools)" >> ./longread-UMI-pipeline_paths.txt
+echo "export SAMTOOLS=$(which samtools)" >> ./longread_umi-AF-LSU_paths.txt
 
 #Bcftools
+echo "--------------- bcftools"
+echo $PWD
 wget "https://github.com/samtools/bcftools/releases/download/1.9/bcftools-1.9.tar.bz2"
 tar -xjf ./bcftools-1.9.tar.bz2
 cd bcftools-1.9 
@@ -134,9 +150,11 @@ make install
 cd ..
 rm -r ./bcftools-1.9*
 ln -s $SOFTWARE_DIR/bcftools_1.9/bin/bcftools ~/bin/bcftools
-echo "export BCFTOOLS=$(which bcftools)" >> ./longread-UMI-pipeline_paths.txt
+echo "export BCFTOOLS=$(which bcftools)" >> ./longread_umi-AF-LSU_paths.txt
 
 #Htslib
+echo "--------------- htslib"
+echo $PWD
 wget "https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2"
 tar -xjf ./htslib-1.9.tar.bz2
 cd htslib-1.9 
@@ -152,59 +170,73 @@ ln -s $SOFTWARE_DIR/htslib_1.9/bin/tabix ~/bin/tabix
 ln -s $SOFTWARE_DIR/htslib_1.9/bin/bgzip ~/bin/bgzip
 
 # Medaka
+echo "--------------- medaka"
+echo $PWD
 conda create -c bioconda -n medaka medaka
-echo "export MEDAKA_ENV_START='eval \"\$(conda shell.bash hook)\"; conda activate medaka'" >> ./longread-UMI-pipeline_paths.txt
-echo "export MEDAKA_ENV_STOP='conda deactivate'" >> ./longread-UMI-pipeline_paths.txt
+echo "export MEDAKA_ENV_START='eval \"\$(conda shell.bash hook)\"; conda activate medaka'" >> ./longread_umi-AF-LSU_paths.txt
+echo "export MEDAKA_ENV_STOP='conda deactivate'" >> ./longread_umi-AF-LSU_paths.txt
 
 # cutadapt
+echo "--------------- cutadapt"
+echo $PWD
 pip3 install --user --upgrade cutadapt
-echo "export CUTADAPT=$(which cutadapt)" >> ./longread-UMI-pipeline_paths.txt
+echo "export CUTADAPT=$(which cutadapt)" >> ./longread_umi-AF-LSU_paths.txt
 
 # Porechop
+echo "--------------- porechop"
+echo $PWD
 git clone https://github.com/rrwick/Porechop.git
 cd Porechop
 make
 cd ..
-echo "export PORECHOP_UMI=$SOFTWARE_DIR/Porechop/porechop-runner.py" >> ./longread-UMI-pipeline_paths.txt
+echo "export PORECHOP_UMI=$SOFTWARE_DIR/Porechop/porechop-runner.py" >> ./longread_umi-AF-LSU_paths.txt
 mv $SOFTWARE_DIR/Porechop/porechop/adapters.py $SOFTWARE_DIR/Porechop/porechop/adapters_original.py
-cp $SOFTWARE_DIR/longread-UMI-pipeline/scripts/adapters.py $SOFTWARE_DIR/Porechop/porechop/
+cp $SOFTWARE_DIR/longread_umi-AF-LSU/scripts/adapters.py $SOFTWARE_DIR/Porechop/porechop/
 
 # Filtlong
+echo "--------------- filtlong"
+echo $PWD
 git clone https://github.com/rrwick/Filtlong.git
 cd Filtlong
 make -j
 cd ..
-echo "export FILTLONG=$SOFTWARE_DIR/Filtlong/bin/filtlong" >> ./longread-UMI-pipeline_paths.txt
+echo "export FILTLONG=$SOFTWARE_DIR/Filtlong/bin/filtlong" >> ./longread_umi-AF-LSU_paths.txt
 
 #BWA
+echo "--------------- bwa"
 git clone https://github.com/lh3/bwa.git
 cd bwa; make
 cd ..
-echo "export BWA=$SOFTWARE_DIR/bwa/bwa" >> ./longread-UMI-pipeline_paths.txt
+echo "export BWA=$SOFTWARE_DIR/bwa/bwa" >> ./longread_umi-AF-LSU_paths.txt
 
 ### Install dependencies manually
 
 # Usearch
-mkdir usearch
+echo "--------------- usearch"
+echo $PWD
+mkdir -p $SOFTWARE_DIR/usearch
 echo ""
 echo "Download usearch from https://drive5.com/usearch/download.html and place in usearch folder"
 echo ""
 read -rsp $'Press any key to continue...\n' -n1 key
+cp $SOFTWARE_DIR/longread_umi-AF-LSU/scripts/usearch $SOFTWARE_DIR/usearch/
 chmod +x $SOFTWARE_DIR/usearch/usearch*
-echo "export USEARCH=$(find $SOFTWARE_DIR/usearch/ -type f -name "usearch*")" >> ./longread-UMI-pipeline_paths.txt
+echo "export USEARCH=$(find $SOFTWARE_DIR/usearch/ -type f -name "usearch*")" >> ./longread_umi-AF-LSU_paths.txt
 
 ### Add depency paths to dependency.sh
 
-echo "" >> ./longread-UMI-pipeline_paths.txt
+echo "" >> ./longread_umi-AF-LSU_paths.txt
 LEAD='^# Program paths$'
 TAIL='^# longread_umi paths'
 
+echo $PWD
+cat ./longread_umi-AF-LSU_paths.txt
 sed -i \
-  -e "/$LEAD/,/$TAIL/{ /$LEAD/{p; r ./longread-UMI-pipeline_paths.txt
-        }; /$TAIL/p; d }"  $SOFTWARE_DIR/longread-UMI-pipeline/scripts/dependencies.sh
+  -e "/$LEAD/,/$TAIL/{ /$LEAD/{p; r ./longread_umi-AF-LSU_paths.txt
+        }; /$TAIL/p; d }"  $SOFTWARE_DIR/longread_umi-AF-LSU/scripts/dependencies.sh
 
 
-### Test longread-UMI-pipeline
-cd longread-UMI-pipeline/test_data
+### Test longread_umi-AF-LSU
+cd longread_umi-AF-LSU/test_data
 longread_umi nanopore_pipeline -d test_reads.fq -o . -v 30 -w rrna_operon -t 1 -q r941_min_high_g303
 longread_umi qc_pipeline -d test_reads.fq -c consensus_raconx3_medakax1.fa -r zymo_curated -t 1
