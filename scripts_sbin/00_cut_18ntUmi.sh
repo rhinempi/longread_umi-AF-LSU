@@ -13,4 +13,5 @@
 
 # adapters.cut.txt will be used in step 04 for the longread_umi pipeline
 
-perl ../scripts/cut_18ntUmi.pl forward.barcode.fa reverse.barcode.fa "f1 f2 r1 r2" adapaters.cut.txt
+#perl ../scripts/cut_18ntUmi.pl forward.barcode.fa reverse.barcode.fa "f1 f2 r1 r2" adapaters.cut.txt
+perl ../scripts/cut_18ntUmi.pl forward.barcode.fa reverse.barcode.fa "13 31 19 37" adapaters.cut.txt
