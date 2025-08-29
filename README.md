@@ -5,8 +5,6 @@ This is a bioinformatics pipeline for LSU long read consensus use cases of Anaer
 **Table of contents**
 - [Installation](#installation)
 - [Quick start](#quick-start)
-- [Data](#data)
-- [Example analysis](#example-analysis)
 - [Usage](#usage)
 
 **Citation**  
@@ -18,7 +16,7 @@ Diana, Katrin, etc. (2025 in submission). Structure and phylogenetic resolution 
 ### Manual
 
 1. Requirements/Dependencies  
-   OS tested (Linux 3.10.0, Ubuntu 14.04, Ubuntu 16.04)
+   OS tested (Ubuntu 22.04.4 LTS, GNU/Linux 5.15.0-112-generic x86_64)
    See `./longread_umi-AF-LSU/scripts/longread_umi_version_dump.txt`
 2. Clone from github in terminal  
    ```
@@ -92,8 +90,8 @@ Diana, Katrin, etc. (2025 in submission). Structure and phylogenetic resolution 
    done &
    ```
    To reproduce the results:
-      1. replace `$my_dir/../test_data/adapaters.cut.txt` with correspond sample adapters. You can file all adapters in the file `./longread_umi-AF-LSU/test_data/all.adapaters.cut.txt`
-      2. replace `$my_dir/../test_data/ont_r10_sample1.fastq` to each sample's fastq file
+      1. replace `$my_dir/../test_data/adapaters.cut.txt` with correspond sample adapters. You can find all adapters in the file `./longread_umi-AF-LSU/test_data/all.adapaters.cut.txt`
+      2. replace `$my_dir/../test_data/ont_r10_sample1.fastq` to each sample's fastq file and the output directory `$my_dir/../test_data/ont_r10_sample1.out` to each sample's output directory
 
 ## Usage
 
