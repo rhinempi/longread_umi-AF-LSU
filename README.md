@@ -11,7 +11,7 @@ This is a bioinformatics pipeline for LSU long read consensus use cases of Anaer
 
 **Citation**  
 
-Diana, Katrin, etc. (2025). Structure and phylogenetic resolution of all ribosomal regions of Neocallimastigales.
+Diana, Katrin, etc. (2025 in submission). Structure and phylogenetic resolution of all ribosomal regions of Neocallimastigales.
 
 ## Installation
 
@@ -19,7 +19,7 @@ Diana, Katrin, etc. (2025). Structure and phylogenetic resolution of all ribosom
 
 1. Requirements/Dependencies  
    OS tested (Linux 3.10.0, Ubuntu 14.04, Ubuntu 16.04)
-   See `scripts/longread_umi_version_dump.txt`
+   See `./longread_umi-AF-LSU/scripts/longread_umi_version_dump.txt`
 2. Clone from github in terminal  
    ```
    git clone https://github.com/rhinempi/longread_umi-AF-LSU.git
@@ -41,193 +41,59 @@ Diana, Katrin, etc. (2025). Structure and phylogenetic resolution of all ribosom
    ```
    ./longread_umi-AF-LSU/scripts/install_dependencies.sh
    ```
-8. Change paths to dependencies  
+5. Change paths to dependencies (optional)
    Modify `./longread_umi-AF-LSU/scripts/dependencies.sh` in a texteditor, if you wish to install dependencies elsewhere.
 
 ## Quick start
 
 ### Test data
-1. Test the longread_umi initialization command in terminal  
-    `longread_umi -h` or `/path/to/longread_umi.sh -h`
-    
-2. Test the nanopore_pipeline in terminal  
-    `longread_umi nanopore_pipeline -h` or `/path/to/longread_umi.sh nanopore_pipeline -h`
-    
-3. Test longread_umi nanopore_pipeline and qc_pipeline on test data:  
-   Go to /path/to/longread_umi/test_data and open a terminal in the directory.
-   
-4. Run pipeline tests 
-   
-   *Nanopore R9.4.1 data (< 5 minutes on desktop)*
-   
+1. Test the nanopore_pipeline in terminal
    ```
-   longread_umi nanopore_pipeline \
-     -d test_reads.fq \
-     -v 30 \
-     -o test_r941 \
-     -s 90 \
-     -e 90 \
-     -m 3500 \
-     -M 6000 \
-     -f CAAGCAGAAGACGGCATACGAGAT \
-     -F AGRGTTYGATYMTGGCTCAG \
-     -r AATGATACGGCGACCACCGAGATC \
-     -R CGACATCGAGGTGCCAAAC \
-     -c 3 \
-     -p 1 \
-     -q r941_min_high_g330 \
-     -t 1
-     
-   longread_umi qc_pipeline \
-    -d test_reads.fq \
-     -c test_r941/consensus_raconx3_medakax1.fa \
-     -r zymo_curated \
-     -t 1 \
-     -u test_r941 \
-     -o test_r941/qc
+   bash ./longread_umi-AF-LSU/sbin/04_longread_umi.sh
    ```
-   
    Expected output
-   - `consensus_raconx3_medakax1.fa` containing 9 UMI consensus sequences
-   - `variants.fa` containing 3 variant consensus sequences
-   
-   *Nanopore R10 data (< 25 minutes on desktop)*
-   
+   - `consensus_raconx2_medakax2.fa` containing 2 UMI consensus sequences with different length
+
+2. Reproduce the result:
+   If we look into the test script: `cat ./longread_umi-AF-LSU/sbin/04_longread_umi.sh`, we see the following script content:
    ```
-   gunzip \
-     -c ont_r10_zymo_rrna.fq.gz > ont_r10_zymo_rrna.fq
-   
+   #!/usr/bin/env bash
+
+   # once you have a list of adaptors for all samples, you can run the longread_umi pipeline for each sample
+   # using the following loops
+
+   # adapaters.cut.txt is the file for a list of cut adapters for all samples
+
+   my_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+   cat $my_dir/../test_data/adapaters.cut.txt | \
+   while read line ;
+   do var1=$(echo $line | cut -f1 -d' ');
+   var2=$(echo $line | cut -f2 -d' ') ;
+   var3=$(echo $line | cut -f3 -d' ');
+   var4=$(echo $line | cut -f4 -d' ');
+   var5=$(echo $line | cut -f5 -d' ');
    longread_umi nanopore_pipeline \
-     -d ont_r10_zymo_rrna.fq \
-     -o test_r10 \
-     -v 25 \
-     -q r10_min_high_g340 \
-     -m 3500 \
-     -M 6000 \
-     -s 90 \
-     -e 90 \
-     -f CAAGCAGAAGACGGCATACGAGAT \
-     -F AGRGTTYGATYMTGGCTCAG \
-     -r AATGATACGGCGACCACCGAGATC \
-     -R CGACATCGAGGTGCCAAAC \
-     -c 2 \
-     -p 2 \
-     -t 1
-     
-   longread_umi qc_pipeline \
-     -d <(gunzip -c ont_r10_zymo_rrna.fq.gz)\
-     -c test_r10/consensus_raconx2_medakax2.fa \
-     -r zymo_curated \
-     -t 1 \
-     -u test_r10 \
-     -o test_r10/qc
+   -d $my_dir/../test_data/ont_r10_sample1.fastq \
+   -o $my_dir/../test_data/ont_r10_sample1.out \
+   -v 5 \
+   -q r10_min_high_g340 \
+   -m 1500 \
+   -M 18000 \
+   -s 90 \
+   -e 90 \
+   -f $var2 \
+   -F $var3 \
+   -r $var4 \
+   -R $var5 \
+   -c 2 \
+   -p 2 \
+   -t 1 ;
+   done &
    ```
-   
-   Expected output
-   
-   - `consensus_raconx2_medakax2.fa` containing  98 UMI consensus sequences
-   - `variants.fa` containing 13 variant consensus sequences
-   
-   *PacBio SequelII CCS data (< 15 minutes on desktop)* 
-   
-   ```
-   gunzip \
-   -c pb_ccs_zymo_rrna.fq.gz > pb_ccs_zymo_rrna.fq
-   
-   longread_umi pacbio_pipeline \
-     -d pb_ccs_zymo_rrna.fq \
-     -o test_pb_ccs \
-     -v 3 \
-     -m 3500 \
-     -M 6000 \
-     -s 60 \
-     -e 60 \
-     -f CAAGCAGAAGACGGCATACGAGAT \
-     -F AGRGTTYGATYMTGGCTCAG \
-     -r AATGATACGGCGACCACCGAGATC \
-     -R CGACATCGAGGTGCCAAAC \
-     -c 2 \
-     -t 1
-     
-   longread_umi qc_pipeline \
-     -d pb_ccs_zymo_rrna.fq \
-     -c test_pb_ccs/consensus_raconx2.fa \
-     -r zymo_curated \
-     -t 1 \
-     -u test_pb_ccs \
-     -o test_pb_ccs/qc
-   ```
-   
-   Expected output
-   
-   - `consensus_raconx2.fa` containing 99 UMI consensus sequences
-   - `variants.fa` containing  13 variant consensus sequences
-   
-   
-
-
-### Zymomock rRNA operon data
-1. Download the Zymomock rRNA operon Nanopore R9.4.1 fastq data and decompress
-   ```
-   wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR333/003/ERR3336963/ERR3336963_1.fastq.gz 
-   gunzip -c ERR3336963_1.fastq.gz > reads.fq
-   ```
-2. Run nanopore pipeline (~ 500 CPU hours)
-   ```
-   longread_umi nanopore_pipeline \
-     -d reads.fq \
-     -o umi_out \
-     -v 30 \
-     -s 90 \
-     -e 90 \
-     -m 3500 \
-     -M 6000 \
-     -f CAAGCAGAAGACGGCATACGAGAT \
-     -F AGRGTTYGATYMTGGCTCAG \
-     -r AATGATACGGCGACCACCGAGATC \
-     -R CGACATCGAGGTGCCAAAC \
-     -c 3 \
-     -p 1 \
-     -q r941_min_high_g330 \
-     -t <Number-of-threads>
-   ```
-5. Run qc pipeline
-   ```
-   longread_umi qc_pipeline \
-     -d "umi_out/umi_binning/trim/reads_tf.fq;reads.fq" \
-     -c "umi_out/consensus_raconx3_medakax1.fa;umi_out/variants.fa" \
-     -r "zymo_curated" \
-     -u umi_out \
-     -o umi_out/qc \
-     -t <Number-of-threads> 
-   ```
-
-## Data
-
-Example data generated for different types of amplicons using Oxford Nanopore or PacBio.
-
-#### Oxford Nanopore
-
-Target | Sample | Sequencing setup | UMI consensus | Raw yield (Gbp) | Raw reads (M) | UMI reads (K)| Mean Length (bp) | Raw data (fastq) | Raw data (fast5) | UMI data (fasta) | Reference
----|---|---|---|---|---|---|---|---|---|---|---
-Bacterial rRNA operon (~4300 bp) | ZymoBIOMICS Microbial Community DNA Standard (D6306, lot no. ZRC190811) | MinION, R10, guppy3.4.4-hac | 2 x racon (v1.4.3), 2 x medaka (v0.11.2) | 18.9 | 4.4 | 23.4 | 4381 | [ERR3813594](https://www.ebi.ac.uk/ena/data/view/ERR3813594) | [ERR3813597](https://www.ebi.ac.uk/ena/data/view/ERR3813597) | [ERZ1284843](https://www.ebi.ac.uk/ena/data/view/ERZ1284843) | [Karst *et al*, 2020](https://www.biorxiv.org/content/10.1101/645903v3)
-Genomic DNA (mean fragment size ~4500 bp) | Escherichia coli str. K-12 substr. MG1655 (DSM 18039) | MinION, R10, guppy3.2.4-hac | 2 x racon (v1.4.3), 1 x medaka (v0.8.1) | 10.4 | 2.7 | 3.7 | 4476 | [ERR3813593](https://www.ebi.ac.uk/ena/data/view/ERR3813593) | [ERR3813596](https://www.ebi.ac.uk/ena/data/view/ERR3813596) | [CACVBX020000000.2](https://www.ebi.ac.uk/ena/browser/view/CACVBX02) | [Karst *et al*, 2020](https://www.biorxiv.org/content/10.1101/645903v3)
-
-
-#### PacBio
-
-Target | Sample | Sequencing setup | UMI consensus | Raw yield (Gbp) | Raw reads (M) | CCS reads (M) | UMI reads (K) | Mean Length (bp) | Subreads data (bam) | CCS data (bam) | UMI data (fasta) | Reference
----|---|---|---|---|---|---|---|---|---|---|---|---
-Bacterial rRNA operon (~4300 bp) | ZymoBIOMICS Microbial Community DNA Standard (D6306, lot no. ZRC190811) | Sequel II, SMRT cell 8M, Sequencing Kit 1.0, CCS (v3.4.1) | 2 x racon (v1.4.3) | 161.4 | 36.6 | 1.9 | 39.7 | 4376 | [ERR3813247](https://www.ebi.ac.uk/ena/data/view/ERR3813247) | [ERR3813246](https://www.ebi.ac.uk/ena/data/view/ERR3813246) | [ERZ1284840](https://www.ebi.ac.uk/ena/data/view/ERZ1284840) | [Karst *et al*, 2020](https://www.biorxiv.org/content/10.1101/645903v3)
-
-## Example analysis
-
-
-
-- [ONT R10 Zymomock rRNA - generate UMI consensus sequences and validate data](https://htmlpreview.github.io/?https://github.com/SorenKarst/longread_umi/blob/master/docs/ONT_R10_ZYMO_rRNA.html)  
-- [PB UMI Zymomock rRNA - generate UMI consensus sequences and validate data](https://htmlpreview.github.io/?https://github.com/SorenKarst/longread_umi/blob/master/docs/PB_UMI_ZYMO_rRNA.html)  
-
-
+   To reproduce the results:
+      1. replace `$my_dir/../test_data/adapaters.cut.txt` with correspond sample adapters. You can file all adapters in the file `./longread_umi-AF-LSU/test_data/all.adapaters.cut.txt`
+      2. replace `$my_dir/../test_data/ont_r10_sample1.fastq` to each sample's fastq file
 
 ## Usage
 
@@ -642,8 +508,6 @@ where:
     -t  Number of threads to use. [Default = 1]
     -b  Debug flag. Keep temp files. [Default = NO]
 ```
-
-  
 
 
 ## License
