@@ -20,6 +20,7 @@ BRANCH=${1:-master}
 
 # Store software dir path
 SOFTWARE_DIR=$PWD
+my_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 ### Check for installation depenencies
 if command -v conda >/dev/null 2>&1 ; then
@@ -55,6 +56,11 @@ rm ./get-pip.py
 # Python virtual environment
 # python3 -m pip install virtualenv --user
 
+# Rscript
+echo "--------------- Rscript"
+conda install -c conda-forge r-base
+conda install -c conda-forge r-idpmisc
+
 # Cmake
 echo "--------------- cmake"
 echo $PWD
@@ -72,7 +78,9 @@ git clone https://github.com/rhinempi/longread_umi-AF-LSU.git -b $BRANCH
 cd ./longread_umi-AF-LSU
 find . -name "*.sh" -exec chmod +x {} \;
 cd ..
-ln -s $SOFTWARE_DIR/longread_umi-AF-LSU/longread_umi.sh ~/bin/longread_umi
+#echo $my_dir
+#ln -sf $my_dir/../longread_umi.sh ~/bin/longread_umi
+ln -sf $SOFTWARE_DIR/longread_umi-AF-LSU/longread_umi.sh ~/bin/longread_umi
 
 ### Install dependencies automaticly
 
@@ -109,7 +117,7 @@ echo $PWD
 git clone https://github.com/lh3/minimap2
 cd minimap2 && make
 cd ..
-ln -s $SOFTWARE_DIR/minimap2/minimap2 ~/bin/minimap2
+ln -sf $SOFTWARE_DIR/minimap2/minimap2 ~/bin/minimap2
 echo "export MINIMAP2=$(which minimap2)" >> ./longread_umi-AF-LSU_paths.txt
 
 # Gawk
@@ -127,12 +135,13 @@ cd samtools-1.9
 ./configure \
   --prefix=$SOFTWARE_DIR/samtools_1.9 \
   --disable-bz2 \
-  --disable-lzma
+  --disable-lzma \
+  --without-curses
 make
 make install
 cd ..
 rm -rf ./samtools-1.9*
-ln -s $SOFTWARE_DIR/samtools_1.9/bin/samtools ~/bin/samtools
+ln -sf $SOFTWARE_DIR/samtools_1.9/bin/samtools ~/bin/samtools
 echo "export SAMTOOLS=$(which samtools)" >> ./longread_umi-AF-LSU_paths.txt
 
 #Bcftools
@@ -149,7 +158,7 @@ make
 make install
 cd ..
 rm -r ./bcftools-1.9*
-ln -s $SOFTWARE_DIR/bcftools_1.9/bin/bcftools ~/bin/bcftools
+ln -sf $SOFTWARE_DIR/bcftools_1.9/bin/bcftools ~/bin/bcftools
 echo "export BCFTOOLS=$(which bcftools)" >> ./longread_umi-AF-LSU_paths.txt
 
 #Htslib
@@ -161,18 +170,19 @@ cd htslib-1.9
 ./configure \
   --prefix=$SOFTWARE_DIR/htslib_1.9 \
   --disable-lzma \
-  --disable-bz2 
+  --disable-bz2 \
 make
 make install
 cd ..
 rm -r ./htslib-1.9*
-ln -s $SOFTWARE_DIR/htslib_1.9/bin/tabix ~/bin/tabix
-ln -s $SOFTWARE_DIR/htslib_1.9/bin/bgzip ~/bin/bgzip
+ln -sf $SOFTWARE_DIR/htslib_1.9/bin/tabix ~/bin/tabix
+ln -sf $SOFTWARE_DIR/htslib_1.9/bin/bgzip ~/bin/bgzip
 
 # Medaka
 echo "--------------- medaka"
 echo $PWD
-conda create -c bioconda -n medaka medaka
+#conda create -c bioconda -n medaka medaka
+conda create -n medaka -c conda-forge -c bioconda medaka
 echo "export MEDAKA_ENV_START='eval \"\$(conda shell.bash hook)\"; conda activate medaka'" >> ./longread_umi-AF-LSU_paths.txt
 echo "export MEDAKA_ENV_STOP='conda deactivate'" >> ./longread_umi-AF-LSU_paths.txt
 

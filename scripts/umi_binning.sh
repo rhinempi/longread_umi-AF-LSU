@@ -95,7 +95,6 @@ if [ -z ${MAX_BIN_SIZE+x} ]; then echo "-N is missing. Defaulting to 10000 +/- r
 if [ -z ${BIN_CLUSTER_RATIO+x} ]; then echo "-S is missing. Defaulting to 10 ."; BIN_CLUSTER_RATIO=10; fi;
 if [ -z ${THREADS+x} ]; then echo "-t is missing. Defaulting to 1 thread."; THREADS=1; fi;
 
-
 ### Source commands and subscripts -------------------------------------
 . $LONGREAD_UMI_PATH/scripts/dependencies.sh # Path to dependencies script
 
@@ -193,8 +192,9 @@ paste -d "" <( sed -n '1~4s/^@/>/p;2~4p' $UMI_DIR/umi1.fq ) \
 # Extract UMI pairs with correct patterns 
 
 # Pattern: (NNNYRNNNYRNNNYRNNN NNNYRNNNYRNNNYRNNN)
-PATTERN="[ATCG]{3}[CT][AG][ATCG]{3}[CT][AG][ATCG]{3}[CT][AG][ATCG]{6}\
-[CT][AG][ATCG]{3}[CT][AG][ATCG]{3}[CT][AG][ATCG]{3}"
+#PATTERN="[ATCG]{3}[CT][AG][ATCG]{3}[CT][AG][ATCG]{3}[CT][AG][ATCG]{6}\
+#[CT][AG][ATCG]{3}[CT][AG][ATCG]{3}[CT][AG][ATCG]{3}"
+PATTERN="[ATCG]{18}[ATCG]{18}"
 grep -B1 -E "$PATTERN" $UMI_DIR/umi12.fa |\
   sed '/^--$/d' > $UMI_DIR/umi12f.fa
 
@@ -211,12 +211,14 @@ $USEARCH \
 $USEARCH \
   -cluster_fast $UMI_DIR/umi12u.fa \
   -id 0.90 \
+  -sort size \
   -centroids $UMI_DIR/umi12c.fa \
   -uc $UMI_DIR/umi12c.txt \
   -sizein \
   -sizeout \
   -strand both \
   -minsize 1
+
 
 # Extract putative UMI pairs
 $CUTADAPT -j $THREADS -e 0.2 -O 11 -m 18 -l 18 \
@@ -239,6 +241,16 @@ $BWA aln \
   -n 6 \
   -t $THREADS \
   -N > $UMI_DIR/umi12p_map.sai
+
+
+echo "----------------------------------------"
+echo "----------------------------------------"
+echo "----------------------------------------"
+echo "----------------------------------------"
+echo "let me check if fucking samtools is there"
+echo $SAMTOOLS
+
+
 $BWA samse \
   -n 10000000 \
   $UMI_DIR/umi12c.fa \
@@ -326,6 +338,9 @@ paste <(cat $UMI_DIR/umi12cf.fa | paste - - ) \
 mkdir $OUT_DIR/read_binning
 mkdir $OUT_DIR/read_binning/bins
 BINNING_DIR=$OUT_DIR/read_binning
+BINNING_DIR=$(readlink -f "$BINNING_DIR")
+echo $BINNING_DIR
+
 
 # Extract UMI region
 $GAWK -v BD="$BINNING_DIR" -v TL="$START_READ_CHECK" '
@@ -466,16 +481,21 @@ $GAWK \
     }
     print "[" strftime("%T") "] Read orientation filtering..." > "/dev/stderr";
     # Count +/- strand reads
+#    print "total: " length(match_umi) > "/dev/stderr";
     for (s in match_umi){
+#	    print "element: " s > "/dev/stderr";
       UM=match_umi[s]
-      sub("_rc", "", UM)
+      # sub("_rc", "", UM)
       # Read orientation stats
       ROC=match(match_umi[s], /_rc/)
+      sub("_rc", "", UM)
       if (ROC != 0){
         umi_ro_plus[UM]++
+#	print "neg: " match_umi[s] >"/dev/stderr";
         roc[s]="+"
       } else {
         umi_ro_neg[UM]++
+#	print "pos: " match_umi[s] >"/dev/stderr";
         roc[s]="-"
       }
       # Count reads per UMI bin
@@ -589,7 +609,7 @@ umi_binning() {
 
   # Binning
   $GAWK -v out="$OUT" '
-    BEGIN {g=1; outsub="./"out"/"g; system("mkdir \047" outsub "\047");}
+    BEGIN {g=1; outsub=out"/"g; system("mkdir \047" outsub "\047");}
     NR==FNR {
       # Get read name
       sub(";.*", "", $1);
@@ -604,7 +624,7 @@ umi_binning() {
           j = 0;
           g++;
           foldergrp[$1]=g;
-          outsub="./"out"/"g;
+          outsub=out"/"g;
           system("mkdir \047" outsub "\047");
         }
       }
@@ -626,6 +646,7 @@ umi_binning() {
 
 export -f umi_binning
 
+echo $BINNING_DIR
 cat $TRIM_DIR/reads_tf.fq |\
   $GNUPARALLEL \
     --env umi_binning \
@@ -633,7 +654,7 @@ cat $TRIM_DIR/reads_tf.fq |\
 	-j $THREADS \
 	--block 300M \
 	--pipe \
-  "mkdir $BINNING_DIR/bins/job{#};\
+  "mkdir -p $BINNING_DIR/bins/job{#};\
   cat | umi_binning $BINNING_DIR/umi_bin_map.txt\
   $BINNING_DIR/bins/job{#}"
 
@@ -694,7 +715,8 @@ $USEARCH \
   -sizeout \
   -minuniquesize 2
 
-PATTERN="[ATCG]{3}[CT][AG][ATCG]{3}[CT][AG][ATCG]{3}[CT][AG][ATCG]{3}"
+#PATTERN="[ATCG]{3}[CT][AG][ATCG]{3}[CT][AG][ATCG]{3}[CT][AG][ATCG]{3}"
+PATTERN="[ATCG]{18}"
 grep -B1 -E "$PATTERN" $UMI_DIR/sumi_u.fa |\
   sed '/^--$/d' > $UMI_DIR/sumi_f.fa
 

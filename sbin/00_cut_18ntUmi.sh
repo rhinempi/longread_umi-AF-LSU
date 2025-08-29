@@ -14,4 +14,6 @@
 # adapters.cut.txt will be used in step 04 for the longread_umi pipeline
 
 #perl ../scripts/cut_18ntUmi.pl forward.barcode.fa reverse.barcode.fa "f1 f2 r1 r2" adapaters.cut.txt
-perl ../scripts/cut_18ntUmi.pl forward.barcode.fa reverse.barcode.fa "13 31 19 37" adapaters.cut.txt
+my_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+echo $my_dir
+perl $my_dir/../scripts/cut_18ntUmi.pl $my_dir/../test_data/forward.barcode.fa $my_dir/../test_data/reverse.barcode.fa "13 31 19 37" $my_dir/../test_data/adapaters.cut.txt

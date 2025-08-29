@@ -9,18 +9,20 @@
 
 # Program paths
 
-export SEQTK=seqtk
-export GNUPARALLEL=parallel
-export RACON=racon
-export MINIMAP2=minimap2
-export GAWK=gawk
-export SAMTOOLS=samtools
-export BCFTOOLS=bcftools
-export CUTADAPT=cutadapt
-export PORECHOP_UMI=porechop
-export FILTLONG=filtlong
-export BWA=bwa
-export USEARCH=usearch
+export SEQTK=/vol/spool/longreadumi/seqtk/seqtk
+export GNUPARALLEL=/home/ubuntu/bin/parallel
+export RACON=/vol/spool/longreadumi/racon/build/bin/racon
+export MINIMAP2=/home/ubuntu/bin/minimap2
+export GAWK=/usr/bin/gawk
+export SAMTOOLS=/home/ubuntu/bin/samtools
+export BCFTOOLS=/home/ubuntu/bin/bcftools
+export MEDAKA_ENV_START='eval "$(conda shell.bash hook)"; conda activate medaka'
+export MEDAKA_ENV_STOP='conda deactivate'
+export CUTADAPT=/home/ubuntu/.local/bin/cutadapt
+export PORECHOP_UMI=/vol/spool/longreadumi/Porechop/porechop-runner.py
+export FILTLONG=/vol/spool/longreadumi/Filtlong/bin/filtlong
+export BWA=/vol/spool/longreadumi/bwa/bwa
+export USEARCH=/vol/spool/longreadumi/usearch/usearch
 
 # longread_umi paths
 export REF_CURATED=$LONGREAD_UMI_PATH/scripts/zymo-ref-uniq_2019-10-28.fa

@@ -173,13 +173,19 @@ consensus_wrapper() {
   $SAMTOOLS index \
     $OUT_DIR/${JOB_NR}.bam
 
+echo "-----------------"
+echo "-----------------"
+echo "-----------------"
+echo "medaka start"
+
   # Medaka consensus
   medaka consensus \
     $OUT_DIR/${JOB_NR}.bam \
     $OUT_DIR/${JOB_NR}_consensus.hdf \
     --threads $MEDAKA_THREADS \
     --model $MEDAKA_MODEL \
-	  --chunk_len $CHUNK_SIZE
+          --chunk_len $CHUNK_SIZE
+
 }
 
 export -f consensus_wrapper
@@ -207,6 +213,7 @@ $GNUPARALLEL \
 medaka stitch \
   $OUT_DIR/consensus/*_consensus.hdf \
   $OUT_DIR/consensus_${OUT_NAME}.fa
+
 
 # Clean consensus header
 sed -i -e "s/:.*//" -e "s/_segment.*//" $OUT_DIR/consensus_${OUT_NAME}.fa

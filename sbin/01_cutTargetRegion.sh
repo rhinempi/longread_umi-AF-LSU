@@ -10,4 +10,5 @@ output=$4; # output cut target region sequence
 cutadapt -j 20 -e 0.2 --rc --discard-untrimmed -g $left --action retain -o $output.left $input
 cutadapt -j 20 -e 0.2 --rc --discard-untrimmed -a $right --action retain -o $output.right $input
 
-perl ../scripts/concate_cut_sequence.pl $output.right $output.left $output  # concate_cut_sequence.pl is the script to combine cut sequences from two sides
+my_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+perl $my_dir/../scripts/concate_cut_sequence.pl $output.right $output.left $output  # concate_cut_sequence.pl is the script to combine cut sequences from two sides
