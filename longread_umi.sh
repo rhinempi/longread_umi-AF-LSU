@@ -1,10 +1,10 @@
 #!/bin/bash
 # DESCRIPTION
-#    longread_umi: pipelines and tools for longread UMI processing.
+#    This is a bioinformatics pipeline for LSU long read consensus use cases of Anaerobice fungi.
 #    
 # IMPLEMENTATION
-#    author   Søren Karst (sorenkarst@gmail.com)
-#             Ryan Ziels (ziels@mail.ubc.ca)
+#    Liren Huang (huanglr@cebitec.uni-bielefeld.de)
+#
 #    license  GNU General Public License
 #
 
